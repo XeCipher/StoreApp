@@ -1,7 +1,5 @@
--- User roles
 CREATE TYPE user_role AS ENUM ('system_administrator', 'normal_user', 'store_owner');
 
--- Create users table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
@@ -12,7 +10,6 @@ CREATE TABLE users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create stores table
 CREATE TABLE stores (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -21,7 +18,6 @@ CREATE TABLE stores (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create ratings table
 CREATE TABLE ratings (
     id SERIAL PRIMARY KEY,
     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),

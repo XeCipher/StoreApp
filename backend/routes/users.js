@@ -5,28 +5,36 @@ const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
+// GET /api/users - Get all users with filtering and sorting
 router.get('/', [auth, adminOnly], async (req, res) => {
-    const { name, email, role } = req.query;
-    let query = 'SELECT id, name, email, address, role FROM users';
-    const params = [];
-    const conditions = [];
+    const { name, email, address, role, sortBy = 'name', sortOrder = 'asc' } = req.query;
 
-    if (name) {
-        params.push(`%${name}%`);
-        conditions.push(`name ILIKE $${params.length}`);
-    }
-    if (email) {
-        params.push(`%${email.toLowerCase()}%`);
-        conditions.push(`email ILIKE $${params.length}`);
-    }
-     if (role) {
-        params.push(role);
-        conditions.push(`role = $${params.length}`);
-    }
+    // Whitelist valid columns for sorting to prevent SQL injection
+    const validSortColumns = { name: 'u.name', email: 'u.email', address: 'u.address', role: 'u.role', store_rating: 'store_rating' };
+    const orderByColumn = validSortColumns[sortBy] || 'u.name';
+    const orderDirection = sortOrder.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+
+    let query = `
+        SELECT
+            u.id, u.name, u.email, u.address, u.role,
+            COALESCE(AVG(r.rating), 0) as store_rating
+        FROM users u
+        LEFT JOIN stores s ON u.id = s.owner_id
+        LEFT JOIN ratings r ON s.id = r.store_id
+    `;
+    const conditions = [];
+    const params = [];
+
+    if (name) { params.push(`%${name}%`); conditions.push(`u.name ILIKE $${params.length}`); }
+    if (email) { params.push(`%${email.toLowerCase()}%`); conditions.push(`u.email ILIKE $${params.length}`); }
+    if (address) { params.push(`%${address}%`); conditions.push(`u.address ILIKE $${params.length}`); }
+    if (role) { params.push(role); conditions.push(`u.role = $${params.length}`); }
 
     if (conditions.length > 0) {
         query += ' WHERE ' + conditions.join(' AND ');
     }
+    
+    query += ` GROUP BY u.id ORDER BY ${orderByColumn} ${orderDirection}`;
 
     try {
         const { rows } = await db.query(query, params);
@@ -37,11 +45,11 @@ router.get('/', [auth, adminOnly], async (req, res) => {
     }
 });
 
+// POST /api/users - Create a new user
 router.post('/', [auth, adminOnly], async (req, res) => {
     let { name, email, password, address, role } = req.body;
     try {
         email = email.toLowerCase();
-
         const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         if (user.rows.length > 0) return res.status(400).json({ msg: 'User already exists' });
         
@@ -59,6 +67,7 @@ router.post('/', [auth, adminOnly], async (req, res) => {
     }
 });
 
+// GET /api/users/dashboard - Get stats for the dashboard
 router.get('/dashboard', [auth, adminOnly], async (req, res) => {
     try {
         const userCount = await db.query('SELECT COUNT(*) FROM users');

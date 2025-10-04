@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import StoreOwnerDashboard from './pages/StoreOwnerDashboard';
+import UpdatePassword from './pages/UpdatePassword'; // Import the new page
 import './App.css';
 
 const Home = () => {
@@ -39,6 +40,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<UserDashboard />} />
             <Route path="/store-owner/dashboard" element={<StoreOwnerDashboard />} />
+            <Route path="/update-password" element={<UpdatePassword />} /> {/* Add the new route here */}
             
             {/* Admin Only Routes */}
             <Route element={<AdminRoute />}>

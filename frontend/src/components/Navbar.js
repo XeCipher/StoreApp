@@ -12,13 +12,18 @@ const Navbar = () => {
   };
 
   return (
-    <nav style={{ background: '#333', color: '#fff', padding: '1rem', display: 'flex', justifyContent: 'space-between' }}>
+    <nav style={{ background: '#333', color: '#fff', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <Link to="/" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.5rem' }}>StoreApp</Link>
       <div>
         {auth.token ? (
-          <button onClick={handleLogout} style={{ background: 'grey', color: 'white', border: 'none', padding: '0.5rem 1rem', cursor: 'pointer' }}>
-            Logout
-          </button>
+          <>
+            <Link to="/update-password" style={{ color: '#fff', textDecoration: 'none', marginRight: '1rem' }}>
+              Settings
+            </Link>
+            <button onClick={handleLogout} style={{ background: 'grey', color: 'white', border: 'none', padding: '0.5rem 1rem', cursor: 'pointer' }}>
+              Logout
+            </button>
+          </>
         ) : (
           <>
             <Link to="/login" style={{ color: '#fff', textDecoration: 'none', marginRight: '1rem' }}>Login</Link>

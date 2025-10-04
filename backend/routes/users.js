@@ -5,9 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 
-// Admin: Get all users with filters
 router.get('/', [auth, adminOnly], async (req, res) => {
-    // Basic filtering example
     const { name, email, role } = req.query;
     let query = 'SELECT id, name, email, address, role FROM users';
     const params = [];
@@ -18,7 +16,7 @@ router.get('/', [auth, adminOnly], async (req, res) => {
         conditions.push(`name ILIKE $${params.length}`);
     }
     if (email) {
-        params.push(`%${email}%`);
+        params.push(`%${email.toLowerCase()}%`);
         conditions.push(`email ILIKE $${params.length}`);
     }
      if (role) {
@@ -39,10 +37,11 @@ router.get('/', [auth, adminOnly], async (req, res) => {
     }
 });
 
-// Admin: Add a new user (any role)
 router.post('/', [auth, adminOnly], async (req, res) => {
-    const { name, email, password, address, role } = req.body;
+    let { name, email, password, address, role } = req.body;
     try {
+        email = email.toLowerCase();
+
         const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         if (user.rows.length > 0) return res.status(400).json({ msg: 'User already exists' });
         
@@ -60,7 +59,6 @@ router.post('/', [auth, adminOnly], async (req, res) => {
     }
 });
 
-// Admin: Dashboard stats
 router.get('/dashboard', [auth, adminOnly], async (req, res) => {
     try {
         const userCount = await db.query('SELECT COUNT(*) FROM users');

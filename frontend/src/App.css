@@ -1,3 +1,4 @@
+/* General Body and Container Styles */
 body {
   font-family: sans-serif;
   margin: 0;
@@ -5,34 +6,156 @@ body {
 }
 
 .container {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem;
-  background-color: #fff;
-  border-radius: 5px;
 }
 
+/* Base Form Element Styling */
 input[type="text"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+select {
   display: block;
-  width: 95%;
-  padding: 0.7rem;
+  width: 100%;
+  padding: 0.8rem;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-size: 1rem;
 }
 
 button {
   background: #333;
   color: #fff;
   border: none;
-  padding: 0.7rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
   border-radius: 4px;
   margin-right: 0.5rem;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
 }
 
 button:hover {
   background: #555;
+}
+
+/* Authentication Forms (Login/Register) */
+.auth-form-container {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.auth-form-container h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.auth-form-container button {
+  width: 100%;
+  margin-right: 0;
+}
+
+/* Admin Dashboard Specific Styles */
+.admin-dashboard {
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.admin-dashboard h2, .admin-dashboard h3 {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.stats-grid {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.stat-item {
+  flex: 1;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.stat-item strong {
+  display: block;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.forms-grid {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.admin-form {
+  flex: 1;
+  padding: 1.5rem;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.user-list {
+  margin-top: 2rem;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.filter-controls button {
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .forms-grid {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid, .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

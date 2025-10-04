@@ -7,15 +7,17 @@ const { auth } = require('../middleware/auth');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { name, email, password, address } = req.body;
+    let { name, email, password, address } = req.body;
     try {
+        email = email.toLowerCase();
+
         const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         if (user.rows.length > 0) return res.status(400).json({ msg: 'User already exists' });
 
         const salt = await bcrypt.genSalt(10);
         const password_hash = await bcrypt.hash(password, salt);
         
-        const role = 'normal_user'; // Default role
+        const role = 'normal_user';
         const newUser = await db.query(
             'INSERT INTO users (name, email, password_hash, address, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, role',
             [name, email, password_hash, address, role]
@@ -31,8 +33,10 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
     try {
+        email = email.toLowerCase();
+
         const userResult = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         if (userResult.rows.length === 0) return res.status(400).json({ msg: 'Invalid Credentials' });
 
